@@ -46,7 +46,7 @@
   </div>
   <div>
     <label>날짜</label>
-    <input type="text" id="date" value="" placeholder=" 월  일" oninput="calc()">
+    <input type="text" id="date" value="" placeholder="월 일" oninput="calc()">
   </div>
 </div>
 
@@ -113,7 +113,7 @@
       total += sum;
 
       if(name !== '') {
-        lines.push("            " + name + "\n            " + (priceInput !== "" ? fmt(price) : "0") + "× " + (qtyInput !== "" ? qty : "") + " =" + fmt(sum));
+        lines.push("            • " + name + "\n            " + (priceInput !== "" ? fmt(price) : "0") + "× " + (qtyInput !== "" ? qty : "") + " =" + fmt(sum));
       }
     });
 
