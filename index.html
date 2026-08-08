@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>일일 매출 보고서 작성기</title>
+<style>
+  :root {
+    --primary: #007aff;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --border: #e5e5ea;
+    --danger: #ff3b30;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: var(--bg); padding: 16px; color: #1c1c1e; max-width: 500px; margin: 0 auto; }
+  h2 { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 16px; }
+  .card { background: var(--card); border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  label { font-size: 12px; font-weight: 600; color: #8e8e93; display: block; margin-bottom: 4px; }
+  input, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; outline: none; background: #fff; }
+  input:focus { border-color: var(--primary); }
+  .row { display: flex; gap: 8px; }
+  .row > div { flex: 1; }
+  .item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .btn-del { background: var(--danger); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-add { width: 100%; background: #e5e5ea; color: var(--primary); border: none; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 600; margin-bottom: 16px; cursor: pointer; }
+  textarea { height: 210px; font-family: monospace, monospace; font-size: 13px; line-height: 1.4; white-space: pre; resize: vertical; margin-top: 4px; }
+  .btn-copy { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; margin-top: 10px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>일일 매출 보고서</h2>
+
+<!-- 기본 정보 -->
+<div class="card">
+  <div class="row" style="margin-bottom: 8px;">
+    <div>
+      <label>매장명</label>
+      <input type="text" id="store" value="세계로 (논현점)" oninput="calc()">
+    </div>
+    <div>
+      <label>이름</label>
+      <input type="text" id="user" value="길정현" oninput="calc()">
+    </div>
+  </div>
+  <div>
+    <label>날짜</label>
+    <input type="text" id="date" value="" placeholder="예: 8월 7일" oninput="calc()">
+  </div>
+</div>
+
+<!-- 제품 목록 -->
+<div id="items-container">
+  <div class="card item">
+    <div class="item-head">
+      <label>제품명</label>
+      <button class="btn-del" onclick="delItem(this)">삭제</button>
+    </div>
+    <input type="text" class="p-name" value="왕교자 350g × 2" oninput="calc()">
+    <div class="row">
+      <div>
+        <label>단가 (원)</label>
+        <input type="number" class="p-price" value="5980" oninput="calc()">
+      </div>
+      <div>
+        <label>수량</label>
+        <input type="number" class="p-qty" value="19" oninput="calc()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card item">
+    <div class="item-head">
+      <label>제품명</label>
+      <button class="btn-del" onclick="delItem(this)">삭제</button>
+    </div>
+    <input type="text" class="p-name" value="큰채소만두 400g 3종" oninput="calc()">
+    <div class="row">
+      <div>
+        <label>단가 (원)</label>
+        <input type="number" class="p-price" value="3989" oninput="calc()">
+      </div>
+      <div>
+        <label>수량</label>
+        <input type="number" class="p-qty" value="26" oninput="calc()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card item">
+    <div class="item-head">
+      <label>제품명</label>
+      <button class="btn-del" onclick="delItem(this)">삭제</button>
+    </div>
+    <input type="text" class="p-name" value="소바바240g 6종" oninput="calc()">
+    <div class="row">
+      <div>
+        <label>단가 (원)</label>
+        <input type="number" class="p-price" value="5980" oninput="calc()">
+      </div>
+      <div>
+        <label>수량</label>
+        <input type="number" class="p-qty" value="11" oninput="calc()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card item">
+    <div class="item-head">
+      <label>제품명</label>
+      <button class="btn-del" onclick="delItem(this)">삭제</button>
+    </div>
+    <input type="text" class="p-name" value="김치왕교자" oninput="calc()">
+    <div class="row">
+      <div>
+        <label>단가 (원)</label>
+        <input type="number" class="p-price" value="10800" oninput="calc()">
+      </div>
+      <div>
+        <label>수량</label>
+        <input type="number" class="p-qty" value="3" oninput="calc()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn-add" onclick="addItem()">+ 품목 추가하기</button>
+
+<!-- 결과지 -->
+<div class="card">
+  <label>결과지 (실시간 자동 계산)</label>
+  <textarea id="result" readonly></textarea>
+  <button class="btn-copy" onclick="copyText()">📋 결과지 전체 복사하기</button>
+</div>
+
+<script>
+  // 오늘 날짜 자동 세팅
+  window.onload = function() {
+    var today = new Date();
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    document.getElementById('date').value = m + '월 ' + d + '일';
+    calc();
+  };
+
+  function fmt(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function calc() {
+    var store = document.getElementById('store').value.trim();
+    var user = document.getElementById('user').value.trim();
+    var date = document.getElementById('date').value.trim();
+
+    var items = document.querySelectorAll('.item');
+    var total = 0;
+    var lines = [];
+
+    items.forEach(function(item) {
+      var name = item.querySelector('.p-name').value.trim();
+      var price = parseInt(item.querySelector('.p-price').value) || 0;
+      var qty = parseInt(item.querySelector('.p-qty').value) || 0;
+      var sum = price * qty;
+      total += sum;
+
+      if(name !== '') {
+        lines.push("            " + name + "\n            " + fmt(price) + "× " + qty + " =" + fmt(sum));
+      }
+    });
+
+    var txt = "매장명: " + store + "\n" +
+              "이   름: " + user + "\n" +
+              "날   짜: " + date + "\n" +
+              "제품명: " + (lines.length > 0 ? lines[0].trimStart() : "");
+
+    if(lines.length > 1) {
+      txt = "매장명: " + store + "\n" +
+            "이   름: " + user + "\n" +
+            "날   짜: " + date + "\n" +
+            "제품명: " + lines[0].trimStart() + "\n";
+      for(var i = 1; i < lines.length; i++) {
+        txt += lines[i] + "\n";
+      }
+    } else {
+      txt += "\n";
+    }
+
+    txt += "\n           총매출액: " + fmt(total) + "원";
+    document.getElementById('result').value = txt;
+  }
+
+  function addItem() {
+    var container = document.getElementById('items-container');
+    var div = document.createElement('div');
+    div.className = 'card item';
+    div.innerHTML = '<div class="item-head"><label>제품명</label><button class="btn-del" onclick="delItem(this)">삭제</button></div><input type="text" class="p-name" placeholder="제품명 입력" oninput="calc()"><div class="row"><div><label>단가 (원)</label><input type="number" class="p-price" placeholder="0" oninput="calc()"></div><div><label>수량</label><input type="number" class="p-qty" placeholder="0" oninput="calc()"></div></div>';
+    container.appendChild(div);
+    calc();
+  }
+
+  function delItem(btn) {
+    btn.closest('.item').remove();
+    calc();
+  }
+
+  function copyText() {
+    var txt = document.getElementById('result');
+    txt.select();
+    txt.setSelectionRange(0, 99999);
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(txt.value).then(function() {
+        alert('복사되었습니다! 카톡에 붙여넣으세요.');
+      });
+    } else {
+      document.execCommand('copy');
+      alert('복사되었습니다! 카톡에 붙여넣으세요.');
+    }
+  }
+</script>
+</body>
+</html>
