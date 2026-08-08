@@ -46,80 +46,27 @@
   </div>
   <div>
     <label>날짜</label>
-    <input type="text" id="date" value="" placeholder="예: 8월 7일" oninput="calc()">
+    <input type="text" id="date" value="" placeholder=" 월  일" oninput="calc()">
   </div>
 </div>
 
 <!-- 제품 목록 -->
 <div id="items-container">
+  <!-- 샘플 품목 1개 -->
   <div class="card item">
     <div class="item-head">
       <label>제품명</label>
       <button class="btn-del" onclick="delItem(this)">삭제</button>
     </div>
-    <input type="text" class="p-name" value="왕교자 350g × 2" oninput="calc()">
+    <input type="text" class="p-name" value="왕교자 350g × 2" placeholder="제품명 입력" oninput="calc()">
     <div class="row">
       <div>
         <label>단가 (원)</label>
-        <input type="number" class="p-price" value="5980" oninput="calc()">
+        <input type="number" class="p-price" value="5980" placeholder="0" oninput="calc()">
       </div>
       <div>
         <label>수량</label>
-        <input type="number" class="p-qty" value="19" oninput="calc()">
-      </div>
-    </div>
-  </div>
-
-  <div class="card item">
-    <div class="item-head">
-      <label>제품명</label>
-      <button class="btn-del" onclick="delItem(this)">삭제</button>
-    </div>
-    <input type="text" class="p-name" value="큰채소만두 400g 3종" oninput="calc()">
-    <div class="row">
-      <div>
-        <label>단가 (원)</label>
-        <input type="number" class="p-price" value="3989" oninput="calc()">
-      </div>
-      <div>
-        <label>수량</label>
-        <input type="number" class="p-qty" value="26" oninput="calc()">
-      </div>
-    </div>
-  </div>
-
-  <div class="card item">
-    <div class="item-head">
-      <label>제품명</label>
-      <button class="btn-del" onclick="delItem(this)">삭제</button>
-    </div>
-    <input type="text" class="p-name" value="소바바240g 6종" oninput="calc()">
-    <div class="row">
-      <div>
-        <label>단가 (원)</label>
-        <input type="number" class="p-price" value="5980" oninput="calc()">
-      </div>
-      <div>
-        <label>수량</label>
-        <input type="number" class="p-qty" value="11" oninput="calc()">
-      </div>
-    </div>
-  </div>
-
-  <div class="card item">
-    <div class="item-head">
-      <label>제품명</label>
-      <button class="btn-del" onclick="delItem(this)">삭제</button>
-    </div>
-    <input type="text" class="p-name" value="김치왕교자" oninput="calc()">
-    <div class="row">
-      <div>
-        <label>단가 (원)</label>
-        <input type="number" class="p-price" value="10800" oninput="calc()">
-      </div>
-      <div>
-        <label>수량</label>
-        <input type="number" class="p-qty" value="3" oninput="calc()">
+        <input type="number" class="p-qty" value="" placeholder="수량 입력" oninput="calc()">
       </div>
     </div>
   </div>
@@ -135,7 +82,6 @@
 </div>
 
 <script>
-  // 오늘 날짜 자동 세팅
   window.onload = function() {
     var today = new Date();
     var m = today.getMonth() + 1;
@@ -159,13 +105,15 @@
 
     items.forEach(function(item) {
       var name = item.querySelector('.p-name').value.trim();
-      var price = parseInt(item.querySelector('.p-price').value) || 0;
-      var qty = parseInt(item.querySelector('.p-qty').value) || 0;
+      var priceInput = item.querySelector('.p-price').value.trim();
+      var price = parseInt(priceInput) || 0;
+      var qtyInput = item.querySelector('.p-qty').value.trim();
+      var qty = parseInt(qtyInput) || 0;
       var sum = price * qty;
       total += sum;
 
       if(name !== '') {
-        lines.push("            " + name + "\n            " + fmt(price) + "× " + qty + " =" + fmt(sum));
+        lines.push("            " + name + "\n            " + (priceInput !== "" ? fmt(price) : "0") + "× " + (qtyInput !== "" ? qty : "") + " =" + fmt(sum));
       }
     });
 
@@ -194,7 +142,7 @@
     var container = document.getElementById('items-container');
     var div = document.createElement('div');
     div.className = 'card item';
-    div.innerHTML = '<div class="item-head"><label>제품명</label><button class="btn-del" onclick="delItem(this)">삭제</button></div><input type="text" class="p-name" placeholder="제품명 입력" oninput="calc()"><div class="row"><div><label>단가 (원)</label><input type="number" class="p-price" placeholder="0" oninput="calc()"></div><div><label>수량</label><input type="number" class="p-qty" placeholder="0" oninput="calc()"></div></div>';
+    div.innerHTML = '<div class="item-head"><label>제품명</label><button class="btn-del" onclick="delItem(this)">삭제</button></div><input type="text" class="p-name" placeholder="제품명 입력" oninput="calc()"><div class="row"><div><label>단가 (원)</label><input type="number" class="p-price" placeholder="0" oninput="calc()"></div><div><label>수량</label><input type="number" class="p-qty" placeholder="수량 입력" oninput="calc()"></div></div>';
     container.appendChild(div);
     calc();
   }
